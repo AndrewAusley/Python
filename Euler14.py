@@ -21,18 +21,33 @@ class Collatz:
     def __init__(self):
         self.max = 0
         self.number = 0
+        self.lengths = {}
 
     def calcChain(self, n):
         temp = [n]
         while n > 1:
             if n % 2 == 0:
                 n /= 2
-                temp.append(n)
             else:
                 n = 3 * n + 1
+            if n in self.lengths:
+                self.populateLengths(temp, n)
+                return
+            else:
                 temp.append(n)
 
-        return temp
+        self.populateLengths(temp, 1)
+
+
+    def populateLengths(self, nums, n):
+        total = len(nums)
+        if n != 1:
+            for i in range(0, total):
+                self.lengths[nums[i]] = len(nums) - i + self.lengths[n]
+        else:
+            for i in range(0, total):
+                self.lengths[nums[i]] = len(nums) - i
+
 
     def bruteTest(self, n):
         temp = []
@@ -42,13 +57,6 @@ class Collatz:
                 self.max = len(temp)
                 self.number = x
 
-    def reverseChain(self, steps):
-        temp = []
-        n = 1
-
-
-pf = Euler3.PrimeFactor()
-print pf.factor(975)
 test = Collatz()
-test.bruteTest(1000000)
-print test.number, test.max
+test.calcChain(10)
+print test.lengths
