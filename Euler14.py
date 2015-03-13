@@ -12,3 +12,43 @@
 # Which starting number, under one million, produces the longest chain?
 # 
 # NOTE: Once the chain starts the terms are allowed to go above one million.
+
+import Euler3
+
+
+class Collatz:
+
+    def __init__(self):
+        self.max = 0
+        self.number = 0
+
+    def calcChain(self, n):
+        temp = [n]
+        while n > 1:
+            if n % 2 == 0:
+                n /= 2
+                temp.append(n)
+            else:
+                n = 3 * n + 1
+                temp.append(n)
+
+        return temp
+
+    def bruteTest(self, n):
+        temp = []
+        for x in range(0, n):
+            temp = self.calcChain(x)
+            if len(temp) > self.max:
+                self.max = len(temp)
+                self.number = x
+
+    def reverseChain(self, steps):
+        temp = []
+        n = 1
+
+
+pf = Euler3.PrimeFactor()
+print pf.factor(975)
+test = Collatz()
+test.bruteTest(1000000)
+print test.number, test.max
