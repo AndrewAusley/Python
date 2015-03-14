@@ -38,25 +38,30 @@ class Collatz:
 
         self.populateLengths(temp, 1)
 
-
     def populateLengths(self, nums, n):
         total = len(nums)
         if n != 1:
             for i in range(0, total):
-                self.lengths[nums[i]] = len(nums) - i + self.lengths[n]
+                temp = len(nums) - i + self.lengths[n]
+                self.lengths[nums[i]] = temp
+                if temp > self.max:
+                    self.max = temp
+                    self.number = nums[i]
         else:
             for i in range(0, total):
-                self.lengths[nums[i]] = len(nums) - i
+                temp = len(nums) - i
+                self.lengths[nums[i]] = temp
+                if temp > self.max:
+                    self.max = temp
+                    self.number = nums[i]
 
 
-    def bruteTest(self, n):
-        temp = []
-        for x in range(0, n):
-            temp = self.calcChain(x)
-            if len(temp) > self.max:
-                self.max = len(temp)
-                self.number = x
+    def calcMax(self, upperlimit):
+        for x in range(0, upperlimit):
+            self.calcChain(x)
+
 
 test = Collatz()
-test.calcChain(10)
-print test.lengths
+test.calcMax(1000000)
+print test.max, test.number
+
