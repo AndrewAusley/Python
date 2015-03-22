@@ -1,50 +1,64 @@
-
-
-import math
-import mpmath
+from math import *
 
 class ApproxPi:
 
-    def __init__(self):
-        self.error = abs(math.e**(6.0/200)+ math.e**(75.0/200)+ math.e**(89.0/200)+ math.e**(226.0/200) - 4 - math.pi)
-        print self.error
-        self.index1 = 0
-        self.index2 = 0
-        self.index3 = 0
-        self.index4 = 0
+    def __init__(self, n):
+        self.n = n
+        self.precision = e**(1.0 / n) - 1
+        self.max = round(log(pi + 1) * n)
+        self.min = 0
+        self.maxLevel = 0
 
-        self.block1 = []
-        self.block2 = []
-        self.block3 = []
-        self.block4 = []
-        for i in range(-25, 25):
-            self.block1.append(math.e ** ((50 * 6.0 + i) / 10000))
-            self.block2.append(math.e ** ((50 * 75.0 + i) / 10000))
-            self.block3.append(math.e ** ((50 * 89.0 + i) / 10000))
-            self.block4.append(math.e ** ((50 * 226.0 + i) / 10000))
+    def calcPi(self):
+        k1 = 0.0
+        level = 2
+        pin = round(pi*self.n)
+        print "First order pi is:", pin
+        while k1 < self.max:
+            k2 = 0.0
+            while k2 < self.max:
+                k3 = 0.0
+                while k3 < self.max:
+                    k4 = pin - k1 - k2 - k3
+                    if 0 < k4 < self.max:
+                        arr = self.taylor(pin, level, k1, k2, k3, k4)
+                        if arr[1] > level:
+                            pin = arr[0]
+                            level = arr[1]
+                            k1 = 0.0
+                            k2 = 0.0
+                            k3 = 0.0
+                    k3 += 1
+                k2 += 1
+            k1 += 1
 
-    def minimizeError(self):
-        for a in range(0, 50):
-            for b in range(0, 50):
-                for c in range(0, 50):
-                    for d in range(0, 50):
-                        error = abs(self.block1[a] + self.block2[b] + self.block3[c] + self.block4[d] - 4 - math.pi)
-                        if error < self.error:
-                            self.error = error
-                            self.index1 = a
-                            self.index2 = b
-                            self.index3 = c
-                            self.index4 = d
-        self.convertIndices()
+    def taylor(self, pin, level, k1, k2, k3, k4):
+        pit = pi*self.n
+        sub = [0.0, pin]
+        t = 2
+        while t <= level:
+            x = self.xi(t, k1, k2, k3, k4)
+            pit -= sub[t-1]
+            if x[0] == round(pit)*x[1]:
+                sub.append(round(x[0]/x[1]))
+                if t == level:
+                    # probably annotate data points here
+                    level += 1
+                    x = self.xi(level, k1, k2, k3, k4)
+                    return round(pi*self.n) - sum(sub[2:len(sub)]) - round(x[0]/x[1]), level
+            else:
+                if t == level:
+                    level += 1
+                    return round(pi*self.n) - sum(sub[2:len(sub)]) - round(x[0]/x[1]), level
+                else:
+                    return pin, level
+            t += 1
 
-    def convertIndices(self):
-        self.index1 = self.index1 + 6 * 50
-        self.index2 = self.index2 + 75 * 50
-        self.index3 = self.index3 + 89 * 50
-        self.index4 = self.index4 + 226 * 50
+    def xi(self, i, k1, k2, k3, k4):
+        ord_num = k1**i + k2**i + k3**i + k4**i
+        ord_den = factorial(i)*self.n**(i-1)
+        return ord_num, ord_den
 
-test = ApproxPi()
-test.minimizeError()
-print 2*pi
-print test.error, test.index1**2 + test.index2**2 + test.index3**2 + test.index4**2
 
+test = ApproxPi(20)
+test.calcPi()
