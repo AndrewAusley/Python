@@ -5,23 +5,21 @@ class BigFib:
 
     def __init__(self):
         self.term = 3
-        self.gold = (1 + 5 ** 0.5) / 2
-        self.factor = log(10) / log(self.gold)
-#        self.factor = round(self.factor, 1)
+        self.Gold = (1 + 5 ** 0.5) / 2
+        self.gold = (1 - 5 ** .5) / 2
+        self.factor = log(10) / log(self.Gold)
+        # self.factor = round(self.factor, 1)
         print self.factor
         self.fibs = [1, 1]
 
-    def calcViaRation(self):
-        x = 50
-        while self.gold**x < 1E1000:
-            x += 1
-        return x
+    def nthFib(self, n):
+        return (self.Gold ** n - self.gold ** n) / (5 ** .5) / 1E10
 
     def calcTerm(self):
         lastOne = 1
         lastTwo = 1
         nextTerm = 0
-        while nextTerm < 1E100:
+        while nextTerm < 5E10:
             nextTerm = lastOne + lastTwo
             lastTwo = lastOne
             lastOne = nextTerm
@@ -31,7 +29,13 @@ class BigFib:
 
         return self.term
 
+    def calcTerm2(self):
+        n = 4700
+        while self.nthFib(n) < 100:
+            n += 1
+        return n
+
 test = BigFib()
-test.calcTerm()
+test.calcTerm2()
 print 999 * test.factor
-print test.factor
+print test.nthFib(50)
