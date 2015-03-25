@@ -8,8 +8,6 @@ class BigFib:
         self.Gold = (1 + 5 ** 0.5) / 2
         self.gold = (1 - 5 ** .5) / 2
         self.factor = log(10) / log(self.Gold)
-        # self.factor = round(self.factor, 1)
-        print self.factor
         self.fibs = [1, 1]
 
     def nthFib(self, n):
@@ -29,13 +27,5 @@ class BigFib:
 
         return self.term
 
-    def calcTerm2(self):
-        n = 4700
-        while self.nthFib(n) < 100:
-            n += 1
-        return n
-
 test = BigFib()
-test.calcTerm2()
-print 999 * test.factor
-print test.nthFib(50)
+print ceil(999 * test.factor) + 1 
